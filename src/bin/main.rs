@@ -10,7 +10,7 @@ fn main() {
     let pool = ThreadPool::new(4);
 
     // 读取信息流接受端
-    for stream in listener.incoming() {
+    for stream in listener.incoming().take(2) {
         let stream = stream.unwrap();
 
         // 每读取到一个请求，就从线程池里选择一个空闲的线程执行 handle_connection 这个闭包函数
@@ -18,6 +18,8 @@ fn main() {
             handle_connection(stream);
         });
     }
+
+    println!("Shutting down");
 }
 
 fn handle_connection(mut stream: TcpStream) {
